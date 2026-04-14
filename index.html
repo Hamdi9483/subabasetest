@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تسجيل الدخول | نظام المسح</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; transition: background-color 0.25s ease, border-color 0.2s ease, color 0.2s ease; }
+        body { font-family: 'Inter', sans-serif; min-height: 100vh; display: flex; align-items: center; justify-content: center; background: var(--bg-gradient); padding: 1.5rem; }
+        :root { --bg-gradient: linear-gradient(135deg, #f5f7fc 0%, #e9eef5 100%); --card-bg: rgba(255, 255, 255, 0.96); --card-shadow: 0 25px 45px -12px rgba(0,0,0,0.2); --text-primary: #1e293b; --text-secondary: #475569; --text-muted: #64748b; --input-bg: #ffffff; --input-border: #cbd5e1; --input-focus: #3b82f6; --btn-primary: #2563eb; --btn-primary-hover: #1d4ed8; --btn-text: white; --icon-color: #5b6e8c; --link-color: #3b82f6; --toggle-bg: #f1f5f9; --toggle-border: #cbd5e1; }
+        body.dark { --bg-gradient: linear-gradient(135deg, #0f172a 0%, #111827 100%); --card-bg: rgba(30, 35, 48, 0.96); --text-primary: #f1f5f9; --text-secondary: #cbd5e6; --input-bg: #1e293b; --input-border: #475569; --input-focus: #60a5fa; --btn-primary: #3b82f6; --btn-primary-hover: #2563eb; --icon-color: #94a3b8; --toggle-bg: #1e293b; --toggle-border: #475569; }
+        body.rtl { direction: rtl; } body:not(.rtl) { direction: ltr; }
+        .login-card { width: 100%; max-width: 460px; background: var(--card-bg); border-radius: 2rem; padding: 2rem; box-shadow: var(--card-shadow); border: 1px solid rgba(255,255,255,0.2); }
+        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.75rem; }
+        .toggle-group { display: flex; gap: 0.75rem; }
+        .toggle-btn { background: var(--toggle-bg); border: 1px solid var(--toggle-border); border-radius: 3rem; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1.3rem; color: var(--text-secondary); transition: all 0.2s; }
+        .toggle-btn:hover { background: var(--btn-primary); color: white; transform: scale(0.96); }
+        .lang-btn { width: auto; padding: 0 1rem; font-weight: 600; font-size: 0.9rem; gap: 6px; }
+        h2 { font-size: 1.9rem; font-weight: 700; background: linear-gradient(120deg, var(--text-primary), var(--btn-primary)); background-clip: text; -webkit-background-clip: text; color: transparent; }
+        .input-group { margin-bottom: 1.5rem; }
+        label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-secondary); }
+        .input-icon { position: relative; display: flex; align-items: center; }
+        .input-icon i { position: absolute; left: 1rem; color: var(--icon-color); pointer-events: none; }
+        body.rtl .input-icon i { left: auto; right: 1rem; }
+        .input-icon input { width: 100%; padding: 0.9rem 1rem 0.9rem 2.7rem; border-radius: 1.2rem; border: 1px solid var(--input-border); background: var(--input-bg); font-size: 1rem; color: var(--text-primary); outline: none; }
+        body.rtl .input-icon input { padding: 0.9rem 2.7rem 0.9rem 1rem; }
+        .input-icon input:focus { border-color: var(--input-focus); box-shadow: 0 0 0 3px rgba(59,130,246,0.2); }
+        .login-btn { width: 100%; background: var(--btn-primary); border: none; padding: 0.9rem; border-radius: 2rem; font-size: 1rem; font-weight: 700; color: var(--btn-text); display: flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer; transition: all 0.25s; margin-top: 0.5rem; }
+        .login-btn:hover { background: var(--btn-primary-hover); transform: scale(0.98); }
+        .form-footer { display: flex; justify-content: space-between; margin-top: 1.5rem; font-size: 0.85rem; }
+        .form-footer a { color: var(--link-color); text-decoration: none; font-weight: 500; }
+        .form-footer a:hover { text-decoration: underline; }
+        .demo-toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(100px); background: var(--card-bg); backdrop-filter: blur(12px); padding: 0.7rem 1.5rem; border-radius: 2rem; color: var(--text-primary); font-weight: 500; font-size: 0.85rem; box-shadow: 0 10px 20px rgba(0,0,0,0.2); border-left: 4px solid var(--btn-primary); z-index: 1000; transition: transform 0.3s ease; pointer-events: none; }
+        .demo-toast.show { transform: translateX(-50%) translateY(0); }
+        @media (max-width:500px){ .login-card { padding: 1.6rem; } h2 { font-size: 1.6rem; } .toggle-btn { width: 38px; height: 38px; } }
+    </style>
+</head>
+<body>
+<div class="login-card">
+    <div class="card-header">
+        <h2 id="pageTitle">Login</h2>
+        <div class="toggle-group">
+            <button class="toggle-btn" id="themeToggle"><i class="fas fa-moon" id="themeIcon"></i></button>
+            <button class="toggle-btn lang-btn" id="langToggle"><i class="fas fa-globe"></i> <span id="langBtnText">EN</span></button>
+        </div>
+    </div>
+    <form id="loginForm">
+        <div class="input-group"><label id="emailLabel">Email</label><div class="input-icon"><i class="fas fa-envelope"></i><input type="email" id="emailInput" placeholder="your@email.com" autocomplete="email" required></div></div>
+        <div class="input-group"><label id="passwordLabel">Password</label><div class="input-icon"><i class="fas fa-lock"></i><input type="password" id="passwordInput" placeholder="••••••••" autocomplete="current-password" required></div></div>
+        <button type="submit" class="login-btn" id="loginButton"><i class="fas fa-arrow-right-to-bracket" id="loginIcon"></i><span id="loginBtnText">Login</span></button>
+        <div class="form-footer"><a href="#" id="forgotLink">Forgot password?</a><a href="#" id="createLink">Create account</a></div>
+    </form>
+</div>
+<div id="demoToast" class="demo-toast"></div>
+
+<script>
+    // ----- Supabase config -----
+    const SUPABASE_URL = 'https://ncqvzpcqotdiwjqbwlwp.supabase.co';
+    const SUPABASE_ANON_KEY = 'sb_publishable_98lfpU1zaqG-MNxkhlvg6g_KEMPMPbS';
+    let supabase = null;
+    try {
+        supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    } catch(e) { console.warn("Supabase init failed", e); }
+
+    // ----- Translations -----
+    const translations = {
+        en: { title:"Login", emailLabel:"Email", passwordLabel:"Password", loginBtn:"Login", emailPlaceholder:"your@email.com", passwordPlaceholder:"••••••••", forgotText:"Forgot password?", createText:"Create account", toastEmpty:"⚠️ Please enter email and password", toastInvalid:"❌ Invalid email or password", toastRoleError:"⚠️ Unauthorized role", toastGeneric:"❌ Login error: ", toastForgot:"📧 Reset link sent", toastCreate:"✨ Contact admin" },
+        ar: { title:"تسجيل الدخول", emailLabel:"البريد الإلكتروني", passwordLabel:"كلمة السر", loginBtn:"تسجيل الدخول", emailPlaceholder:"example@domain.com", passwordPlaceholder:"••••••••", forgotText:"نسيت كلمة السر؟", createText:"إنشاء حساب", toastEmpty:"⚠️ الرجاء إدخال البريد وكلمة السر", toastInvalid:"❌ البريد أو كلمة السر غير صحيحة", toastRoleError:"⚠️ دور الحساب غير مصرح به", toastGeneric:"❌ خطأ في تسجيل الدخول: ", toastForgot:"📧 تم إرسال رابط إعادة التعيين", toastCreate:"✨ يرجى التواصل مع المدير" }
+    };
+
+    // DOM elements
+    const elements = {
+        title: document.getElementById('pageTitle'), emailLabel: document.getElementById('emailLabel'), passwordLabel: document.getElementById('passwordLabel'),
+        loginBtnText: document.getElementById('loginBtnText'), emailInput: document.getElementById('emailInput'), passwordInput: document.getElementById('passwordInput'),
+        forgotLink: document.getElementById('forgotLink'), createLink: document.getElementById('createLink'), langBtnSpan: document.getElementById('langBtnText'),
+        themeToggle: document.getElementById('themeToggle'), themeIcon: document.getElementById('themeIcon'), langToggle: document.getElementById('langToggle'),
+        loginForm: document.getElementById('loginForm'), loginIcon: document.getElementById('loginIcon'), loginButton: document.getElementById('loginButton'),
+        toastEl: document.getElementById('demoToast')
+    };
+
+    let isDark = false, isArabic = false;
+    let toastTimeout;
+
+    function showToast(msg, isError=false) {
+        elements.toastEl.textContent = msg;
+        elements.toastEl.style.borderLeftColor = isError ? '#ef4444' : 'var(--btn-primary)';
+        elements.toastEl.classList.add('show');
+        if(toastTimeout) clearTimeout(toastTimeout);
+        toastTimeout = setTimeout(() => elements.toastEl.classList.remove('show'), 4000);
+    }
+
+    function applyTheme() {
+        if(isDark) { document.body.classList.add('dark'); elements.themeIcon.className = 'fas fa-sun'; }
+        else { document.body.classList.remove('dark'); elements.themeIcon.className = 'fas fa-moon'; }
+        localStorage.setItem('themePreference', isDark ? 'dark' : 'light');
+    }
+
+    function updateUI() {
+        const t = translations[isArabic ? 'ar' : 'en'];
+        elements.title.textContent = t.title;
+        elements.emailLabel.textContent = t.emailLabel;
+        elements.passwordLabel.textContent = t.passwordLabel;
+        elements.loginBtnText.textContent = t.loginBtn;
+        elements.emailInput.placeholder = t.emailPlaceholder;
+        elements.passwordInput.placeholder = t.passwordPlaceholder;
+        elements.forgotLink.textContent = t.forgotText;
+        elements.createLink.textContent = t.createText;
+        elements.langBtnSpan.textContent = isArabic ? 'EN' : 'عربي';
+        if(isArabic) {
+            document.body.classList.add('rtl');
+            document.documentElement.dir = 'rtl';
+            elements.loginIcon.classList.remove('fa-arrow-right-to-bracket');
+            elements.loginIcon.classList.add('fa-arrow-left-to-bracket');
+        } else {
+            document.body.classList.remove('rtl');
+            document.documentElement.dir = 'ltr';
+            elements.loginIcon.classList.remove('fa-arrow-left-to-bracket');
+            elements.loginIcon.classList.add('fa-arrow-right-to-bracket');
+        }
+        localStorage.setItem('langPreference', isArabic ? 'ar' : 'en');
+    }
+
+    function toggleLanguage() { isArabic = !isArabic; updateUI(); }
+    function toggleTheme() { isDark = !isDark; applyTheme(); }
+
+    // ----- Supabase Login (مع حماية الأخطاء) -----
+    async function handleLogin(e) {
+        e.preventDefault();
+        const email = elements.emailInput.value.trim();
+        const password = elements.passwordInput.value;
+        const t = translations[isArabic ? 'ar' : 'en'];
+        if(!email || !password) { showToast(t.toastEmpty, true); return; }
+        if(!supabase) { showToast("Supabase not initialized", true); return; }
+
+        elements.loginButton.disabled = true;
+        const originalText = elements.loginBtnText.textContent;
+        elements.loginBtnText.textContent = isArabic ? "جاري..." : "Please wait...";
+
+        try {
+            const { data: authData, error: signError } = await supabase.auth.signInWithPassword({ email, password });
+            if(signError) { showToast(t.toastInvalid, true); return; }
+            const userId = authData.user.id;
+            const { data: profile, error: profileError } = await supabase.from('profiles').select('role').eq('id', userId).single();
+            if(profileError || !profile) { showToast(t.toastRoleError, true); await supabase.auth.signOut(); return; }
+            const role = profile.role;
+            if(role === 'super_admin' || role === 'admin') window.location.href = 'dashboard.html';
+            else if(role === 'scanner') window.location.href = 'scan.html';
+            else { showToast(t.toastRoleError, true); await supabase.auth.signOut(); }
+        } catch(err) { showToast(translations[isArabic?'ar':'en'].toastGeneric + err.message, true); }
+        finally { elements.loginButton.disabled = false; elements.loginBtnText.textContent = originalText; }
+    }
+
+    async function handleForgot(e) {
+        e.preventDefault();
+        const email = elements.emailInput.value.trim();
+        if(!email) { showToast(isArabic ? "⚠️ أدخل بريدك أولاً" : "⚠️ Enter your email first", true); return; }
+        if(!supabase) { showToast("Supabase not ready", true); return; }
+        const { error } = await supabase.auth.resetPasswordForEmail(email);
+        showToast(error ? error.message : (isArabic ? "📧 تم الإرسال" : "📧 Reset link sent"), !!error);
+    }
+    function handleCreate(e) { e.preventDefault(); showToast(isArabic ? "✨ يرجى التواصل مع المدير" : "✨ Contact admin to create account"); }
+
+    // ----- التحقق من الجلسة الحالية (مع منع التعطيل) -----
+    async function checkExistingSession() {
+        if(!supabase) return;
+        try {
+            const { data: { session } } = await supabase.auth.getSession();
+            if(session) {
+                const userId = session.user.id;
+                const { data: profile } = await supabase.from('profiles').select('role').eq('id', userId).single();
+                if(profile) {
+                    if(profile.role === 'super_admin' || profile.role === 'admin') window.location.href = 'dashboard.html';
+                    else if(profile.role === 'scanner') window.location.href = 'scan.html';
+                }
+            }
+        } catch(e) { console.warn("Session check failed", e); }
+    }
+
+    // ----- تحميل التفضيلات وربط الأزرار (دائماً أولاً) -----
+    function loadPreferences() {
+        const savedTheme = localStorage.getItem('themePreference');
+        isDark = savedTheme === 'dark' ? true : (savedTheme === 'light' ? false : window.matchMedia('(prefers-color-scheme: dark)').matches);
+        applyTheme();
+        const savedLang = localStorage.getItem('langPreference');
+        if(savedLang === 'ar') isArabic = true;
+        else if(savedLang === 'en') isArabic = false;
+        else isArabic = navigator.language.toLowerCase().startsWith('ar');
+        updateUI();
+    }
+
+    // ربط الأزرار أولاً
+    elements.themeToggle.addEventListener('click', toggleTheme);
+    elements.langToggle.addEventListener('click', toggleLanguage);
+    elements.loginForm.addEventListener('submit', handleLogin);
+    elements.forgotLink.addEventListener('click', handleForgot);
+    elements.createLink.addEventListener('click', handleCreate);
+
+    // بدء التشغيل
+    loadPreferences();
+    checkExistingSession(); // غير متزامن ولا يعطل الأزرار
+</script>
+</body>
+</html>
