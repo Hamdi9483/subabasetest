@@ -1,172 +1,446 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>تسجيل الدخول | نظام العيادة</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <style>
-    :root { --primary: #4f46e5; --bg: #f8fafc; --card: #fff; --txt: #0f172a; --brd: #e2e8f0; }
-    [data-theme="dark"] { --primary: #6366f1; --bg: #0f172a; --card: #1e293b; --txt: #f1f5f9; --brd: #334155; }
-    * { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI',Tahoma,sans-serif; transition:all 0.3s; }
-    body { background:var(--bg); color:var(--txt); min-height:100vh; display:flex; align-items:center; justify-content:center; padding:20px; }
-    .login-box { background:var(--card); padding:32px; border-radius:20px; box-shadow:0 10px 40px rgba(0,0,0,0.1); width:100%; max-width:400px; border:1px solid var(--brd); }
-    .header { text-align:center; margin-bottom:24px; }
-    .header h2 { font-size:1.5rem; font-weight:700; background:linear-gradient(135deg, #667eea, #764ba2); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
-    .header p { color:var(--txt); opacity:0.7; font-size:0.9rem; margin-top:4px; }
-    .ctrl-btns { display:flex; justify-content:flex-end; gap:8px; margin-bottom:16px; }
-    .ctrl-btn { width:36px; height:36px; border-radius:10px; border:none; background:var(--bg); color:var(--txt); cursor:pointer; font-size:1rem; display:flex; align-items:center; justify-content:center; box-shadow:0 2px 6px rgba(0,0,0,0.05); }
-    .ctrl-btn:hover { background:var(--primary); color:#fff; transform:translateY(-2px); }
-    .form-group { margin-bottom:18px; }
-    label { display:block; margin-bottom:6px; font-weight:600; font-size:0.95rem; }
-    input { width:100%; padding:12px; border:2px solid var(--brd); border-radius:12px; font-size:1rem; background:var(--bg); color:var(--txt); outline:none; }
-    input:focus { border-color:var(--primary); box-shadow:0 0 0 3px rgba(79,70,229,0.15); }
-    .btn { width:100%; padding:14px; border:none; border-radius:12px; background:var(--primary); color:#fff; font-size:1rem; font-weight:600; cursor:pointer; transition:0.2s; display:flex; align-items:center; justify-content:center; gap:8px; }
-    .btn:hover { opacity:0.9; transform:translateY(-1px); }
-    .btn:disabled { opacity:0.6; cursor:not-allowed; transform:none; }
-    .error-msg { color:#ef4444; background:rgba(239,68,68,0.1); padding:10px; border-radius:8px; text-align:center; margin-top:12px; display:none; font-size:0.9rem; }
-    .error-msg.show { display:block; animation:shake 0.3s; }
-    @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-4px)} 75%{transform:translateX(4px)} }
-    .footer { text-align:center; margin-top:20px; font-size:0.85rem; opacity:0.7; }
-    .links { text-align:center; margin-top:12px; font-size:0.9rem; }
-    .links a { color:var(--primary); text-decoration:none; font-weight:500; }
-    .links a:hover { text-decoration:underline; }
-  </style>
+    <!-- تعريف ترميز الصفحة وتهيئة العرض للجوال -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تسجيل الدخول | نظام العيادة</title>
+    
+    <!-- مكتبة الأيقونات (Font Awesome) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <!-- خط Inter من جوجل لتحسين جودة النصوص -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- مكتبة Supabase للاتصال بقاعدة البيانات -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <style>
+        /* ========================================
+           إعدادات الانتقال السلس للعناصر
+           ======================================== */
+        * { margin: 0; padding: 0; box-sizing: border-box; transition: background-color 0.25s ease, border-color 0.2s ease, color 0.2s ease; }
+        
+        /* ========================================
+           تنسيق الجسم الرئيسي للصفحة
+           ======================================== */
+        body { font-family: 'Inter', sans-serif; min-height: 100vh; display: flex; align-items: center; justify-content: center; background: var(--bg-gradient); padding: 1.5rem; }
+        
+        /* ========================================
+           متغيرات الألوان - الوضع النهاري (الافتراضي)
+           ======================================== */
+        :root { 
+            --bg-gradient: linear-gradient(135deg, #f5f7fc 0%, #e9eef5 100%); 
+            --card-bg: rgba(255, 255, 255, 0.96); 
+            --card-shadow: 0 25px 45px -12px rgba(0,0,0,0.2); 
+            --text-primary: #1e293b; 
+            --text-secondary: #475569; 
+            --text-muted: #64748b; 
+            --input-bg: #ffffff; 
+            --input-border: #cbd5e1; 
+            --input-focus: #3b82f6; 
+            --btn-primary: #2563eb; 
+            --btn-primary-hover: #1d4ed8; 
+            --btn-text: white; 
+            --icon-color: #5b6e8c; 
+            --link-color: #3b82f6; 
+            --toggle-bg: #f1f5f9; 
+            --toggle-border: #cbd5e1; 
+        }
+        
+        /* ========================================
+           متغيرات الألوان - الوضع الليلي
+           ======================================== */
+        body.dark { 
+            --bg-gradient: linear-gradient(135deg, #0f172a 0%, #111827 100%); 
+            --card-bg: rgba(30, 35, 48, 0.96); 
+            --text-primary: #f1f5f9; 
+            --text-secondary: #cbd5e6; 
+            --input-bg: #1e293b; 
+            --input-border: #475569; 
+            --input-focus: #60a5fa; 
+            --btn-primary: #3b82f6; 
+            --btn-primary-hover: #2563eb; 
+            --icon-color: #94a3b8; 
+            --toggle-bg: #1e293b; 
+            --toggle-border: #475569; 
+        }
+        
+        /* ========================================
+           دعم اتجاه النص (يمين لليسار / يسار لليمين)
+           ======================================== */
+        body.rtl { direction: rtl; } 
+        body:not(.rtl) { direction: ltr; }
+        
+        /* ========================================
+           بطاقة تسجيل الدخول (الحاوية الرئيسية)
+           ======================================== */
+        .login-card { 
+            width: 100%; max-width: 460px; 
+            background: var(--card-bg); 
+            border-radius: 2rem; 
+            padding: 2rem; 
+            box-shadow: var(--card-shadow); 
+            border: 1px solid rgba(255,255,255,0.2); 
+        }
+        
+        /* ========================================
+           رأس البطاقة (العنوان وأزرار التحكم)
+           ======================================== */
+        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.75rem; }
+        
+        /* ========================================
+           مجموعة أزرار التبديل (اللغة/السمة)
+           ======================================== */
+        .toggle-group { display: flex; gap: 0.75rem; }
+        .toggle-btn { 
+            background: var(--toggle-bg); 
+            border: 1px solid var(--toggle-border); 
+            border-radius: 3rem; 
+            width: 44px; height: 44px; 
+            display: flex; align-items: center; justify-content: center; 
+            cursor: pointer; font-size: 1.3rem; color: var(--text-secondary); 
+            transition: all 0.2s; 
+        }
+        .toggle-btn:hover { background: var(--btn-primary); color: white; transform: scale(0.96); }
+        .lang-btn { width: auto; padding: 0 1rem; font-weight: 600; font-size: 0.9rem; gap: 6px; }
+        
+        /* ========================================
+           عنوان الصفحة الرئيسي
+           ======================================== */
+        h2 { 
+            font-size: 1.9rem; font-weight: 700; 
+            background: linear-gradient(120deg, var(--text-primary), var(--btn-primary)); 
+            background-clip: text; -webkit-background-clip: text; 
+            color: transparent; 
+        }
+        
+        /* ========================================
+           مجموعات حقول الإدخال
+           ======================================== */
+        .input-group { margin-bottom: 1.5rem; }
+        label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-secondary); }
+        
+        /* ========================================
+           حقول الإدخال مع الأيقونات
+           ======================================== */
+        .input-icon { position: relative; display: flex; align-items: center; }
+        .input-icon i { position: absolute; left: 1rem; color: var(--icon-color); pointer-events: none; }
+        body.rtl .input-icon i { left: auto; right: 1rem; }
+        .input-icon input { 
+            width: 100%; padding: 0.9rem 1rem 0.9rem 2.7rem; 
+            border-radius: 1.2rem; border: 1px solid var(--input-border); 
+            background: var(--input-bg); font-size: 1rem; color: var(--text-primary); 
+            outline: none; 
+        }
+        body.rtl .input-icon input { padding: 0.9rem 2.7rem 0.9rem 1rem; }
+        .input-icon input:focus { border-color: var(--input-focus); box-shadow: 0 0 0 3px rgba(59,130,246,0.2); }
+        
+        /* ========================================
+           زر تسجيل الدخول الرئيسي
+           ======================================== */
+        .login-btn { 
+            width: 100%; background: var(--btn-primary); border: none; 
+            padding: 0.9rem; border-radius: 2rem; font-size: 1rem; font-weight: 700; 
+            color: var(--btn-text); display: flex; align-items: center; justify-content: center; 
+            gap: 10px; cursor: pointer; transition: all 0.25s; margin-top: 0.5rem; 
+        }
+        .login-btn:hover { background: var(--btn-primary-hover); transform: scale(0.98); }
+        
+        /* ========================================
+           رسائل التنبيه المنبثقة (Toast)
+           ======================================== */
+        .demo-toast { 
+            position: fixed; bottom: 20px; left: 50%; 
+            transform: translateX(-50%) translateY(100px); 
+            background: var(--card-bg); backdrop-filter: blur(12px); 
+            padding: 0.7rem 1.5rem; border-radius: 2rem; 
+            color: var(--text-primary); font-weight: 500; font-size: 0.85rem; 
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2); 
+            border-left: 4px solid var(--btn-primary); 
+            z-index: 1000; transition: transform 0.3s ease; pointer-events: none; 
+        }
+        .demo-toast.show { transform: translateX(-50%) translateY(0); }
+        
+        /* ========================================
+           تحسينات العرض للشاشات الصغيرة
+           ======================================== */
+        @media (max-width:500px){ 
+            .login-card { padding: 1.6rem; } 
+            h2 { font-size: 1.6rem; } 
+            .toggle-btn { width: 38px; height: 38px; } 
+        }
+    </style>
 </head>
 <body>
-  <div class="login-box">
-    <div class="ctrl-btns">
-      <button class="ctrl-btn" id="langBtn" title="Language">EN</button>
-      <button class="ctrl-btn" id="themeBtn" title="Theme">🌙</button>
+
+<!-- ========================================
+    الحاوية الرئيسية لبطاقة الدخول
+    ======================================== -->
+<div class="login-card">
+    <!-- رأس البطاقة: العنوان وأزرار التحكم -->
+    <div class="card-header">
+        <h2 id="pageTitle">Login</h2>
+        <div class="toggle-group">
+            <!-- زر تبديل الوضع الليلي/النهاري -->
+            <button class="toggle-btn" id="themeToggle"><i class="fas fa-moon" id="themeIcon"></i></button>
+            <!-- زر تبديل اللغة مع العلم -->
+            <button class="toggle-btn lang-btn" id="langToggle"><i class="fas fa-globe"></i> <span id="langBtnText">EN</span></button>
+        </div>
     </div>
-    <div class="header">
-      <h2 id="loginTitle">تسجيل الدخول</h2>
-      <p id="loginSubtitle">مرحباً بك في نظام العيادة</p>
-    </div>
+    
+    <!-- نموذج تسجيل الدخول -->
     <form id="loginForm">
-      <div class="form-group">
-        <label id="emailLabel">البريد الإلكتروني</label>
-        <input type="email" id="email" placeholder="أدخل بريدك" required>
-      </div>
-      <div class="form-group">
-        <label id="passLabel">كلمة المرور</label>
-        <input type="password" id="password" placeholder="أدخل كلمة المرور" required>
-      </div>
-      <button type="submit" class="btn" id="loginBtn">
-        <i class="fas fa-sign-in-alt"></i> <span id="btnText">دخول</span>
-      </button>
+        <!-- حقل البريد الإلكتروني -->
+        <div class="input-group">
+            <label id="emailLabel">Email</label>
+            <div class="input-icon">
+                <i class="fas fa-envelope"></i>
+                <input type="email" id="emailInput" placeholder="your@email.com" autocomplete="email" required>
+            </div>
+        </div>
+        
+        <!-- حقل كلمة المرور -->
+        <div class="input-group">
+            <label id="passwordLabel">Password</label>
+            <div class="input-icon">
+                <i class="fas fa-lock"></i>
+                <input type="password" id="passwordInput" placeholder="••••••••" autocomplete="current-password" required>
+            </div>
+        </div>
+        
+        <!-- زر الإرسال -->
+        <button type="submit" class="login-btn" id="loginButton">
+            <i class="fas fa-arrow-right-to-bracket" id="loginIcon"></i>
+            <span id="loginBtnText">Login</span>
+        </button>
     </form>
-    <div id="errorMsg" class="error-msg"></div>
-    <div class="links"><a href="#">نسيت كلمة المرور؟</a> • <a href="#">إنشاء حساب</a></div>
-    <div class="footer" id="footerText">✨ نظام العيادة © 2026</div>
-  </div>
+</div>
 
-  <!-- ✅ تحميل مكتبة Supabase -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  
-  <script>
-    // ========================================
-    // 1️⃣ واجهة المستخدم (تعمل دائماً)
-    // ========================================
-    let lang = localStorage.getItem('clinic_lang') || 'ar';
-    let theme = localStorage.getItem('clinic_theme') || 'light';
+<!-- عنصر التنبيهات المنبثقة -->
+<div id="demoToast" class="demo-toast"></div>
 
-    const T = {
-      ar: { title:"تسجيل الدخول", subtitle:"مرحباً بك في نظام العيادة", emailLbl:"البريد الإلكتروني", emailPh:"أدخل بريدك", passLbl:"كلمة المرور", passPh:"أدخل كلمة المرور", btn:"دخول", footer:"✨ نظام العيادة © 2026", flag:"EN", themeT:"الوضع الليلي", langT:"English", errAuth:"❌ بيانات خاطئة", errConn:"❌ فشل الاتصال", ld:"جاري...", pages:{super:'super-admin.html', admin:'Dashboard.html', scanner:'Scan.html', home:'home.html'} },
-      en: { title:"Login", subtitle:"Welcome to Clinic System", emailLbl:"Email", emailPh:"Enter email", passLbl:"Password", passPh:"Enter password", btn:"Sign In", footer:"✨ Clinic © 2026", flag:"🇸🇦", themeT:"Dark Mode", langT:"العربية", errAuth:"❌ Invalid credentials", errConn:"❌ Connection failed", ld:"Loading...", pages:{super:'super-admin.html', admin:'Dashboard.html', scanner:'Scan.html', home:'home.html'} }
-    };
-
-    function applyTheme(t) {
-      document.documentElement.setAttribute('data-theme', t);
-      document.getElementById('themeBtn').innerHTML = t === 'dark' ? '☀️' : '🌙';
-      document.getElementById('themeBtn').title = T[lang].themeT;
-      localStorage.setItem('clinic_theme', t);
-    }
-    function toggleTheme() { applyTheme(theme = theme === 'dark' ? 'light' : 'dark'); }
-
-    function applyLang(l) {
-      const t = T[l];
-      document.documentElement.lang = l;
-      document.documentElement.dir = l === 'ar' ? 'rtl' : 'ltr';
-      document.getElementById('loginTitle').textContent = t.title;
-      document.getElementById('loginSubtitle').textContent = t.subtitle;
-      document.getElementById('emailLabel').textContent = t.emailLbl;
-      document.getElementById('email').placeholder = t.emailPh;
-      document.getElementById('passLabel').textContent = t.passLbl;
-      document.getElementById('password').placeholder = t.passPh;
-      document.getElementById('btnText').textContent = t.btn;
-      document.getElementById('footerText').textContent = t.footer;
-      document.getElementById('langBtn').textContent = t.flag;
-      document.getElementById('langBtn').title = t.langT;
-      document.getElementById('themeBtn').title = t.themeT;
-      localStorage.setItem('clinic_lang', l);
-    }
-    function toggleLang() { applyLang(lang = lang === 'ar' ? 'en' : 'ar'); }
-
-    // ========================================
-    // 2️⃣ منطق تسجيل الدخول + اتصال Supabase
-    // ========================================
+<!-- ========================================
+    منطق الجافاسكريبت للصفحة
+    ======================================== -->
+<script>
+    /**
+     * ========================================
+     * قسم 1: إعدادات الاتصال بـ Supabase
+     * ========================================
+     */
     const SUPABASE_URL = 'https://ncqvzpcqotdiwjqbwlwp.supabase.co';
     const SUPABASE_ANON_KEY = 'sb_publishable_98lfpU1zaqG-MNxkhlvg6g_KEMPMPbS';
-    let sb = null;
+    let supabase = null;
+    
+    // تهيئة عميل الاتصال مع معالجة الأخطاء
+    try {
+        supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    } catch(e) { console.warn("Supabase init failed", e); }
 
-    document.addEventListener('DOMContentLoaded', () => {
-      // تهيئة الواجهة
-      applyTheme(theme);
-      applyLang(lang);
-
-      // ربط الأزرار يدوياً (أكثر استقراراً على GitHub Pages)
-      document.getElementById('langBtn').addEventListener('click', toggleLang);
-      document.getElementById('themeBtn').addEventListener('click', toggleTheme);
-
-      // التحقق من تحميل Supabase
-      if (typeof supabase !== 'undefined') {
-        sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        console.log('✅ Supabase Client Initialized');
-      } else {
-        console.warn('⚠️ Supabase CDN Failed to Load. Check Internet or AdBlocker.');
-      }
-
-      // معالجة النموذج
-      document.getElementById('loginForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        if (!sb) {
-          alert('⚠️ مكتبة الاتصال غير محملة. تأكد من الإنترنت أو عطل مانع الإعلانات.');
-          return;
+    /**
+     * ========================================
+     * قسم 2: قاموس الترجمات (عربي/إنجليزي)
+     * ========================================
+     */
+    const translations = {
+        en: { 
+            title:"Login", emailLabel:"Email", passwordLabel:"Password", loginBtn:"Login", 
+            emailPlaceholder:"your@email.com", passwordPlaceholder:"••••••••",
+            toastEmpty:"⚠️ Please enter email and password", toastInvalid:"❌ Invalid email or password", 
+            toastRoleError:"⚠️ Unauthorized role", toastGeneric:"❌ Login error: "
+        },
+        ar: { 
+            title:"تسجيل الدخول", emailLabel:"البريد الإلكتروني", passwordLabel:"كلمة السر", loginBtn:"تسجيل الدخول", 
+            emailPlaceholder:"example@domain.com", passwordPlaceholder:"••••••••",
+            toastEmpty:"⚠️ الرجاء إدخال البريد وكلمة السر", toastInvalid:"❌ البريد أو كلمة السر غير صحيحة", 
+            toastRoleError:"⚠️ دور الحساب غير مصرح به", toastGeneric:"❌ خطأ في تسجيل الدخول: "
         }
+    };
 
-        const btn = document.getElementById('loginBtn');
-        const txt = document.getElementById('btnText');
-        const err = document.getElementById('errorMsg');
-        const t = T[lang];
+    /**
+     * ========================================
+     * قسم 3: تعريف عناصر واجهة المستخدم (DOM)
+     * ========================================
+     */
+    const elements = {
+        title: document.getElementById('pageTitle'), 
+        emailLabel: document.getElementById('emailLabel'), 
+        passwordLabel: document.getElementById('passwordLabel'),
+        loginBtnText: document.getElementById('loginBtnText'), 
+        emailInput: document.getElementById('emailInput'), 
+        passwordInput: document.getElementById('passwordInput'),
+        langBtnSpan: document.getElementById('langBtnText'),
+        themeToggle: document.getElementById('themeToggle'), 
+        themeIcon: document.getElementById('themeIcon'), 
+        langToggle: document.getElementById('langToggle'),
+        loginForm: document.getElementById('loginForm'), 
+        loginIcon: document.getElementById('loginIcon'), 
+        loginButton: document.getElementById('loginButton'),
+        toastEl: document.getElementById('demoToast')
+    };
 
-        err.classList.remove('show');
-        btn.disabled = true;
-        txt.textContent = t.ld;
+    /**
+     * ========================================
+     * قسم 4: متغيرات حالة التطبيق
+     * ========================================
+     */
+    let isDark = false, isArabic = false;
+    let toastTimeout;
+
+    /**
+     * ========================================
+     * دالة: عرض رسالة تنبيه منبثقة
+     * @param {string} msg - نص الرسالة
+     * @param {boolean} isError - هل هي رسالة خطأ؟
+     * ========================================
+     */
+    function showToast(msg, isError=false) {
+        elements.toastEl.textContent = msg;
+        elements.toastEl.style.borderLeftColor = isError ? '#ef4444' : 'var(--btn-primary)';
+        elements.toastEl.classList.add('show');
+        if(toastTimeout) clearTimeout(toastTimeout);
+        toastTimeout = setTimeout(() => elements.toastEl.classList.remove('show'), 4000);
+    }
+
+    /**
+     * ========================================
+     * دالة: تطبيق إعدادات السمة (داكن/فاتح)
+     * ========================================
+     */
+    function applyTheme() {
+        if(isDark) { 
+            document.body.classList.add('dark'); 
+            elements.themeIcon.className = 'fas fa-sun'; 
+        } else { 
+            document.body.classList.remove('dark'); 
+            elements.themeIcon.className = 'fas fa-moon'; 
+        }
+        localStorage.setItem('themePreference', isDark ? 'dark' : 'light');
+    }
+
+    /**
+     * ========================================
+     * دالة: تحديث نصوص الواجهة حسب اللغة المختارة
+     * ========================================
+     */
+    function updateUI() {
+        const t = translations[isArabic ? 'ar' : 'en'];
+        
+        // تحديث النصوص الثابتة
+        elements.title.textContent = t.title;
+        elements.emailLabel.textContent = t.emailLabel;
+        elements.passwordLabel.textContent = t.passwordLabel;
+        elements.loginBtnText.textContent = t.loginBtn;
+        elements.emailInput.placeholder = t.emailPlaceholder;
+        elements.passwordInput.placeholder = t.passwordPlaceholder;
+        elements.langBtnSpan.textContent = isArabic ? 'EN' : 'عربي';
+        
+        // تحديث اتجاه الصفحة وأيقونة الزر
+        if(isArabic) {
+            document.body.classList.add('rtl');
+            document.documentElement.dir = 'rtl';
+            elements.loginIcon.classList.remove('fa-arrow-right-to-bracket');
+            elements.loginIcon.classList.add('fa-arrow-left-to-bracket');
+        } else {
+            document.body.classList.remove('rtl');
+            document.documentElement.dir = 'ltr';
+            elements.loginIcon.classList.remove('fa-arrow-left-to-bracket');
+            elements.loginIcon.classList.add('fa-arrow-right-to-bracket');
+        }
+        localStorage.setItem('langPreference', isArabic ? 'ar' : 'en');
+    }
+
+    /**
+     * ========================================
+     * دوال تبديل اللغة والسمة
+     * ========================================
+     */
+    function toggleLanguage() { isArabic = !isArabic; updateUI(); }
+    function toggleTheme() { isDark = !isDark; applyTheme(); }
+
+    /**
+     * ========================================
+     * دالة: معالجة عملية تسجيل الدخول
+     * @param {Event} e - حدث إرسال النموذج
+     * ========================================
+     */
+    async function handleLogin(e) {
+        e.preventDefault();
+        const email = elements.emailInput.value.trim();
+        const password = elements.passwordInput.value;
+        const t = translations[isArabic ? 'ar' : 'en'];
+        
+        // التحقق من صحة المدخلات
+        if(!email || !password) { showToast(t.toastEmpty, true); return; }
+        if(!supabase) { showToast("Supabase not initialized", true); return; }
+
+        // تعطيل الزر أثناء المعالجة
+        elements.loginButton.disabled = true;
+        const originalText = elements.loginBtnText.textContent;
+        elements.loginBtnText.textContent = isArabic ? "جاري..." : "Please wait...";
 
         try {
-          const { data, error } = await sb.auth.signInWithPassword({
-            email: document.getElementById('email').value.trim(),
-            password: document.getElementById('password').value
-          });
-          if (error) throw error;
-
-          const { data: profile } = await sb.from('profiles').select('role').eq('id', data.user.id).single();
-          const role = profile?.role || 'scanner';
-          const pages = t.pages;
-          
-          window.location.href = role === 'super_admin' ? pages.super :
-                                 role === 'admin' ? pages.admin :
-                                 role === 'scanner' ? pages.scanner : pages.home;
-        } catch (x) {
-          console.error('Login Error:', x);
-          err.textContent = x.message?.includes('Invalid') ? t.errAuth : t.errConn;
-          err.classList.add('show');
-          btn.disabled = false;
-          txt.textContent = t.btn;
+            // 1. محاولة تسجيل الدخول عبر خدمة المصادقة
+            const { data: authData, error: signError } = await supabase.auth.signInWithPassword({ email, password });
+            if(signError) { showToast(t.toastInvalid, true); return; }
+            
+            // 2. جلب بيانات الملف الشخصي لتحديد الصلاحية
+            const userId = authData.user.id;
+            const { data: profile, error: profileError } = await supabase.from('profiles').select('role').eq('id', userId).single();
+            
+            if(profileError || !profile) { showToast(t.toastRoleError, true); await supabase.auth.signOut(); return; }
+            
+            // 3. التوجيه للصفحة المناسبة حسب الدور
+            const role = profile.role;
+            if(role === 'super_admin' || role === 'admin') window.location.href = 'Dashboard.html';
+            else if(role === 'scanner') window.location.href = 'Scan.html';
+            else { showToast(t.toastRoleError, true); await supabase.auth.signOut(); }
+            
+        } catch(err) { 
+            // معالجة الأخطاء غير المتوقعة
+            showToast(translations[isArabic?'ar':'en'].toastGeneric + err.message, true); 
+        } finally { 
+            // إعادة تمكين الزر واستعادة النص الأصلي
+            elements.loginButton.disabled = false; 
+            elements.loginBtnText.textContent = originalText; 
         }
-      });
-    });
-  </script>
+    }
+
+    /**
+     * ========================================
+     * دالة: تحميل تفضيلات المستخدم المحفوظة
+     * ========================================
+     */
+    function loadPreferences() {
+        // تحميل تفضيل السمة
+        const savedTheme = localStorage.getItem('themePreference');
+        isDark = savedTheme === 'dark' ? true : (savedTheme === 'light' ? false : window.matchMedia('(prefers-color-scheme: dark)').matches);
+        applyTheme();
+        
+        // تحميل تفضيل اللغة
+        const savedLang = localStorage.getItem('langPreference');
+        if(savedLang === 'ar') isArabic = true;
+        else if(savedLang === 'en') isArabic = false;
+        else isArabic = navigator.language.toLowerCase().startsWith('ar');
+        updateUI();
+    }
+
+    /**
+     * ========================================
+     * ربط أحداث الأزرار بالنماذج (عند تحميل الصفحة)
+     * ========================================
+     */
+    elements.themeToggle.addEventListener('click', toggleTheme);
+    elements.langToggle.addEventListener('click', toggleLanguage);
+    elements.loginForm.addEventListener('submit', handleLogin);
+
+    /**
+     * ========================================
+     * بدء تشغيل التطبيق
+     * ========================================
+     */
+    loadPreferences();
+</script>
 </body>
 </html>
