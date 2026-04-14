@@ -1,206 +1,229 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تسجيل الدخول | نظام المسح</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; transition: background-color 0.25s ease, border-color 0.2s ease, color 0.2s ease; }
-        body { font-family: 'Inter', sans-serif; min-height: 100vh; display: flex; align-items: center; justify-content: center; background: var(--bg-gradient); padding: 1.5rem; }
-        :root { --bg-gradient: linear-gradient(135deg, #f5f7fc 0%, #e9eef5 100%); --card-bg: rgba(255, 255, 255, 0.96); --card-shadow: 0 25px 45px -12px rgba(0,0,0,0.2); --text-primary: #1e293b; --text-secondary: #475569; --text-muted: #64748b; --input-bg: #ffffff; --input-border: #cbd5e1; --input-focus: #3b82f6; --btn-primary: #2563eb; --btn-primary-hover: #1d4ed8; --btn-text: white; --icon-color: #5b6e8c; --link-color: #3b82f6; --toggle-bg: #f1f5f9; --toggle-border: #cbd5e1; }
-        body.dark { --bg-gradient: linear-gradient(135deg, #0f172a 0%, #111827 100%); --card-bg: rgba(30, 35, 48, 0.96); --text-primary: #f1f5f9; --text-secondary: #cbd5e6; --input-bg: #1e293b; --input-border: #475569; --input-focus: #60a5fa; --btn-primary: #3b82f6; --btn-primary-hover: #2563eb; --icon-color: #94a3b8; --toggle-bg: #1e293b; --toggle-border: #475569; }
-        body.rtl { direction: rtl; } body:not(.rtl) { direction: ltr; }
-        .login-card { width: 100%; max-width: 460px; background: var(--card-bg); border-radius: 2rem; padding: 2rem; box-shadow: var(--card-shadow); border: 1px solid rgba(255,255,255,0.2); }
-        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.75rem; }
-        .toggle-group { display: flex; gap: 0.75rem; }
-        .toggle-btn { background: var(--toggle-bg); border: 1px solid var(--toggle-border); border-radius: 3rem; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1.3rem; color: var(--text-secondary); transition: all 0.2s; }
-        .toggle-btn:hover { background: var(--btn-primary); color: white; transform: scale(0.96); }
-        .lang-btn { width: auto; padding: 0 1rem; font-weight: 600; font-size: 0.9rem; gap: 6px; }
-        h2 { font-size: 1.9rem; font-weight: 700; background: linear-gradient(120deg, var(--text-primary), var(--btn-primary)); background-clip: text; -webkit-background-clip: text; color: transparent; }
-        .input-group { margin-bottom: 1.5rem; }
-        label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-secondary); }
-        .input-icon { position: relative; display: flex; align-items: center; }
-        .input-icon i { position: absolute; left: 1rem; color: var(--icon-color); pointer-events: none; }
-        body.rtl .input-icon i { left: auto; right: 1rem; }
-        .input-icon input { width: 100%; padding: 0.9rem 1rem 0.9rem 2.7rem; border-radius: 1.2rem; border: 1px solid var(--input-border); background: var(--input-bg); font-size: 1rem; color: var(--text-primary); outline: none; }
-        body.rtl .input-icon input { padding: 0.9rem 2.7rem 0.9rem 1rem; }
-        .input-icon input:focus { border-color: var(--input-focus); box-shadow: 0 0 0 3px rgba(59,130,246,0.2); }
-        .login-btn { width: 100%; background: var(--btn-primary); border: none; padding: 0.9rem; border-radius: 2rem; font-size: 1rem; font-weight: 700; color: var(--btn-text); display: flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer; transition: all 0.25s; margin-top: 0.5rem; }
-        .login-btn:hover { background: var(--btn-primary-hover); transform: scale(0.98); }
-        .form-footer { display: flex; justify-content: space-between; margin-top: 1.5rem; font-size: 0.85rem; }
-        .form-footer a { color: var(--link-color); text-decoration: none; font-weight: 500; }
-        .form-footer a:hover { text-decoration: underline; }
-        .demo-toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(100px); background: var(--card-bg); backdrop-filter: blur(12px); padding: 0.7rem 1.5rem; border-radius: 2rem; color: var(--text-primary); font-weight: 500; font-size: 0.85rem; box-shadow: 0 10px 20px rgba(0,0,0,0.2); border-left: 4px solid var(--btn-primary); z-index: 1000; transition: transform 0.3s ease; pointer-events: none; }
-        .demo-toast.show { transform: translateX(-50%) translateY(0); }
-        @media (max-width:500px){ .login-card { padding: 1.6rem; } h2 { font-size: 1.6rem; } .toggle-btn { width: 38px; height: 38px; } }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title data-i18n="pageTitle">تسجيل الدخول | نظام العيادة</title>
+  <style>
+    :root { --primary: #4f46e5; --bg: #f8fafc; --card: #fff; --txt: #0f172a; --brd: #e2e8f0; }
+    [data-theme="dark"] { --bg: #0f172a; --card: #1e293b; --txt: #f1f5f9; --brd: #334155; }
+    * { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI',Tahoma,sans-serif; transition:all 0.3s; }
+    body { background:var(--bg); color:var(--txt); min-height:100vh; display:flex; align-items:center; justify-content:center; padding:20px; }
+    .login-container { background:var(--card); padding:30px; border-radius:20px; box-shadow:0 10px 40px rgba(0,0,0,0.1); width:100%; max-width:400px; border:1px solid var(--brd); }
+    .login-header { text-align:center; margin-bottom:24px; }
+    .login-header h2 { font-size:1.5rem; font-weight:700; background:linear-gradient(135deg, #667eea, #764ba2); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+    .login-header p { color:#64748b; font-size:0.9rem; margin-top:6px; }
+    .ctrl-btns { display:flex; justify-content:flex-end; gap:8px; margin-bottom:16px; }
+    .ctrl-btn { width:36px; height:36px; border-radius:10px; border:none; background:var(--bg); color:var(--txt); cursor:pointer; font-size:1rem; display:flex; align-items:center; justify-content:center; }
+    .ctrl-btn:hover { background:var(--primary); color:#fff; }
+    .form-group { margin-bottom:18px; }
+    label { display:block; margin-bottom:6px; font-weight:600; font-size:0.95rem; }
+    input { width:100%; padding:12px; border:2px solid var(--brd); border-radius:12px; font-size:1rem; background:var(--bg); color:var(--txt); outline:none; }
+    input:focus { border-color:var(--primary); box-shadow:0 0 0 3px rgba(79,70,229,0.15); }
+    .btn { width:100%; padding:14px; border:none; border-radius:12px; background:var(--primary); color:#fff; font-size:1rem; font-weight:600; cursor:pointer; transition:0.2s; }
+    .btn:hover { background:#4338ca; transform:translateY(-1px); }
+    .btn:disabled { opacity:0.6; cursor:not-allowed; transform:none; }
+    .error-msg { color:#ef4444; font-size:0.85rem; text-align:center; margin-top:10px; display:none; background:rgba(239,68,68,0.1); padding:8px; border-radius:8px; }
+    .footer { text-align:center; margin-top:20px; font-size:0.85rem; color:var(--txt); opacity:0.7; }
+    .links { text-align:center; margin-top:16px; font-size:0.9rem; }
+    .links a { color:var(--primary); text-decoration:none; font-weight:500; }
+    .links a:hover { text-decoration:underline; }
+  </style>
 </head>
 <body>
-<div class="login-card">
-    <div class="card-header">
-        <h2 id="pageTitle">Login</h2>
-        <div class="toggle-group">
-            <button class="toggle-btn" id="themeToggle"><i class="fas fa-moon" id="themeIcon"></i></button>
-            <button class="toggle-btn lang-btn" id="langToggle"><i class="fas fa-globe"></i> <span id="langBtnText">EN</span></button>
-        </div>
+  <div class="login-container">
+    <div class="ctrl-btns">
+      <button class="ctrl-btn" id="langBtn" title="English" onclick="toggleLang()">EN</button>
+      <button class="ctrl-btn" id="themeBtn" title="الوضع الليلي" onclick="toggleTheme()">🌙</button>
+    </div>
+    <div class="login-header">
+      <h2 id="loginTitle">Login</h2>
+      <p id="loginSubtitle">Welcome to Clinic Management</p>
     </div>
     <form id="loginForm">
-        <div class="input-group"><label id="emailLabel">Email</label><div class="input-icon"><i class="fas fa-envelope"></i><input type="email" id="emailInput" placeholder="your@email.com" autocomplete="email" required></div></div>
-        <div class="input-group"><label id="passwordLabel">Password</label><div class="input-icon"><i class="fas fa-lock"></i><input type="password" id="passwordInput" placeholder="••••••••" autocomplete="current-password" required></div></div>
-        <button type="submit" class="login-btn" id="loginButton"><i class="fas fa-arrow-right-to-bracket" id="loginIcon"></i><span id="loginBtnText">Login</span></button>
-        <div class="form-footer"><a href="#" id="forgotLink">Forgot password?</a><a href="#" id="createLink">Create account</a></div>
+      <div class="form-group">
+        <label id="emailLabel">Email</label>
+        <input type="email" id="email" placeholder="Enter your email" required>
+      </div>
+      <div class="form-group">
+        <label id="passLabel">Password</label>
+        <input type="password" id="password" placeholder="Enter your password" required>
+      </div>
+      <button type="submit" class="btn" id="loginBtn"><span id="btnText">Login</span></button>
     </form>
-</div>
-<div id="demoToast" class="demo-toast"></div>
+    <div id="errorMsg" class="error-msg"></div>
+    <div class="links">
+      <a href="#" id="forgotLink">Forgot password?</a> • <a href="#" id="createLink">Create account</a>
+    </div>
+    <div class="footer" id="footerText">✨ Welcome</div>
+  </div>
 
-<script>
-    // ----- Supabase config -----
+  <!-- ✅ مكتبة Supabase الرسمية -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  
+  <script>
+    // ========================================
+    // 🔑 مفاتيح Supabase الخاصة بك
+    // ========================================
     const SUPABASE_URL = 'https://ncqvzpcqotdiwjqbwlwp.supabase.co';
     const SUPABASE_ANON_KEY = 'sb_publishable_98lfpU1zaqG-MNxkhlvg6g_KEMPMPbS';
-    let supabase = null;
-    try {
-        supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-    } catch(e) { console.warn("Supabase init failed", e); }
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    // ----- Translations -----
+    // ========================================
+    // 🌐 حالة التطبيق والترجمات
+    // ========================================
+    let currentLang = localStorage.getItem('clinic_lang') || 'ar';
+    let currentTheme = localStorage.getItem('clinic_theme') || 'light';
+
     const translations = {
-        en: { title:"Login", emailLabel:"Email", passwordLabel:"Password", loginBtn:"Login", emailPlaceholder:"your@email.com", passwordPlaceholder:"••••••••", forgotText:"Forgot password?", createText:"Create account", toastEmpty:"⚠️ Please enter email and password", toastInvalid:"❌ Invalid email or password", toastRoleError:"⚠️ Unauthorized role", toastGeneric:"❌ Login error: ", toastForgot:"📧 Reset link sent", toastCreate:"✨ Contact admin" },
-        ar: { title:"تسجيل الدخول", emailLabel:"البريد الإلكتروني", passwordLabel:"كلمة السر", loginBtn:"تسجيل الدخول", emailPlaceholder:"example@domain.com", passwordPlaceholder:"••••••••", forgotText:"نسيت كلمة السر؟", createText:"إنشاء حساب", toastEmpty:"⚠️ الرجاء إدخال البريد وكلمة السر", toastInvalid:"❌ البريد أو كلمة السر غير صحيحة", toastRoleError:"⚠️ دور الحساب غير مصرح به", toastGeneric:"❌ خطأ في تسجيل الدخول: ", toastForgot:"📧 تم إرسال رابط إعادة التعيين", toastCreate:"✨ يرجى التواصل مع المدير" }
+      ar: {
+        pageTitle: "تسجيل الدخول | نظام العيادة",
+        loginTitle: "تسجيل الدخول",
+        loginSubtitle: "مرحباً بك في نظام إدارة العيادة",
+        emailLabel: "البريد الإلكتروني",
+        emailPh: "أدخل بريدك الإلكتروني",
+        passLabel: "كلمة المرور",
+        passPh: "أدخل كلمة المرور",
+        btnText: "دخول",
+        errorMsg: "❌ البريد أو كلمة المرور غير صحيحة",
+        connError: "❌ خطأ في الاتصال",
+        loading: "جاري الدخول...",
+        forgot: "نسيت كلمة المرور؟",
+        create: "إنشاء حساب جديد",
+        footer: "✨ نظام العيادة © 2026",
+        langTitle: "English",
+        themeTitle: "الوضع الليلي",
+        routes: { super: 'super-admin.html', admin: 'Dashboard.html', scanner: 'Scan.html', home: 'home.html' }
+      },
+      en: {
+        pageTitle: "Login | Clinic System",
+        loginTitle: "Login",
+        loginSubtitle: "Welcome to Clinic Management",
+        emailLabel: "Email Address",
+        emailPh: "Enter your email",
+        passLabel: "Password",
+        passPh: "Enter your password",
+        btnText: "Sign In",
+        errorMsg: "❌ Invalid credentials",
+        connError: "❌ Connection error",
+        loading: "Signing in...",
+        forgot: "Forgot password?",
+        create: "Create account",
+        footer: "✨ Clinic System © 2026",
+        langTitle: "العربية",
+        themeTitle: "Dark Mode",
+        routes: { super: 'super-admin.html', admin: 'Dashboard.html', scanner: 'Scan.html', home: 'home.html' }
+      }
     };
 
-    // DOM elements
-    const elements = {
-        title: document.getElementById('pageTitle'), emailLabel: document.getElementById('emailLabel'), passwordLabel: document.getElementById('passwordLabel'),
-        loginBtnText: document.getElementById('loginBtnText'), emailInput: document.getElementById('emailInput'), passwordInput: document.getElementById('passwordInput'),
-        forgotLink: document.getElementById('forgotLink'), createLink: document.getElementById('createLink'), langBtnSpan: document.getElementById('langBtnText'),
-        themeToggle: document.getElementById('themeToggle'), themeIcon: document.getElementById('themeIcon'), langToggle: document.getElementById('langToggle'),
-        loginForm: document.getElementById('loginForm'), loginIcon: document.getElementById('loginIcon'), loginButton: document.getElementById('loginButton'),
-        toastEl: document.getElementById('demoToast')
-    };
-
-    let isDark = false, isArabic = false;
-    let toastTimeout;
-
-    function showToast(msg, isError=false) {
-        elements.toastEl.textContent = msg;
-        elements.toastEl.style.borderLeftColor = isError ? '#ef4444' : 'var(--btn-primary)';
-        elements.toastEl.classList.add('show');
-        if(toastTimeout) clearTimeout(toastTimeout);
-        toastTimeout = setTimeout(() => elements.toastEl.classList.remove('show'), 4000);
+    // ========================================
+    // 🔄 دوال تبديل اللغة والسمة
+    // ========================================
+    function applyTheme(theme) {
+      document.documentElement.setAttribute('data-theme', theme);
+      document.getElementById('themeBtn').innerHTML = theme === 'dark' ? '☀️' : '🌙';
+      document.getElementById('themeBtn').title = translations[currentLang].themeTitle;
+      localStorage.setItem('clinic_theme', theme);
     }
 
-    function applyTheme() {
-        if(isDark) { document.body.classList.add('dark'); elements.themeIcon.className = 'fas fa-sun'; }
-        else { document.body.classList.remove('dark'); elements.themeIcon.className = 'fas fa-moon'; }
-        localStorage.setItem('themePreference', isDark ? 'dark' : 'light');
+    function toggleTheme() {
+      currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      applyTheme(currentTheme);
     }
 
-    function updateUI() {
-        const t = translations[isArabic ? 'ar' : 'en'];
-        elements.title.textContent = t.title;
-        elements.emailLabel.textContent = t.emailLabel;
-        elements.passwordLabel.textContent = t.passwordLabel;
-        elements.loginBtnText.textContent = t.loginBtn;
-        elements.emailInput.placeholder = t.emailPlaceholder;
-        elements.passwordInput.placeholder = t.passwordPlaceholder;
-        elements.forgotLink.textContent = t.forgotText;
-        elements.createLink.textContent = t.createText;
-        elements.langBtnSpan.textContent = isArabic ? 'EN' : 'عربي';
-        if(isArabic) {
-            document.body.classList.add('rtl');
-            document.documentElement.dir = 'rtl';
-            elements.loginIcon.classList.remove('fa-arrow-right-to-bracket');
-            elements.loginIcon.classList.add('fa-arrow-left-to-bracket');
-        } else {
-            document.body.classList.remove('rtl');
-            document.documentElement.dir = 'ltr';
-            elements.loginIcon.classList.remove('fa-arrow-left-to-bracket');
-            elements.loginIcon.classList.add('fa-arrow-right-to-bracket');
-        }
-        localStorage.setItem('langPreference', isArabic ? 'ar' : 'en');
+    function applyLanguage(lang) {
+      const t = translations[lang];
+      document.documentElement.lang = lang;
+      document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+      
+      document.getElementById('loginTitle').textContent = t.loginTitle;
+      document.getElementById('loginSubtitle').textContent = t.loginSubtitle;
+      document.getElementById('emailLabel').textContent = t.emailLabel;
+      document.getElementById('email').placeholder = t.emailPh;
+      document.getElementById('passLabel').textContent = t.passLabel;
+      document.getElementById('password').placeholder = t.passPh;
+      document.getElementById('btnText').textContent = t.btnText;
+      document.getElementById('forgotLink').textContent = t.forgot;
+      document.getElementById('createLink').textContent = t.create;
+      document.getElementById('footerText').textContent = t.footer;
+      
+      document.getElementById('langBtn').textContent = lang === 'ar' ? 'EN' : '🇸🇦';
+      document.getElementById('langBtn').title = t.langTitle;
+      document.getElementById('themeBtn').title = t.themeTitle;
+      
+      localStorage.setItem('clinic_lang', lang);
     }
 
-    function toggleLanguage() { isArabic = !isArabic; updateUI(); }
-    function toggleTheme() { isDark = !isDark; applyTheme(); }
-
-    // ----- Supabase Login (مع حماية الأخطاء) -----
-    async function handleLogin(e) {
-        e.preventDefault();
-        const email = elements.emailInput.value.trim();
-        const password = elements.passwordInput.value;
-        const t = translations[isArabic ? 'ar' : 'en'];
-        if(!email || !password) { showToast(t.toastEmpty, true); return; }
-        if(!supabase) { showToast("Supabase not initialized", true); return; }
-
-        elements.loginButton.disabled = true;
-        const originalText = elements.loginBtnText.textContent;
-        elements.loginBtnText.textContent = isArabic ? "جاري..." : "Please wait...";
-
-        try {
-            const { data: authData, error: signError } = await supabase.auth.signInWithPassword({ email, password });
-            if(signError) { showToast(t.toastInvalid, true); return; }
-            const userId = authData.user.id;
-            const { data: profile, error: profileError } = await supabase.from('profiles').select('role').eq('id', userId).single();
-            if(profileError || !profile) { showToast(t.toastRoleError, true); await supabase.auth.signOut(); return; }
-            const role = profile.role;
-            if(role === 'super_admin' || role === 'admin') window.location.href = 'dashboard.html';
-            else if(role === 'scanner') window.location.href = 'scan.html';
-            else { showToast(t.toastRoleError, true); await supabase.auth.signOut(); }
-        } catch(err) { showToast(translations[isArabic?'ar':'en'].toastGeneric + err.message, true); }
-        finally { elements.loginButton.disabled = false; elements.loginBtnText.textContent = originalText; }
+    function toggleLang() {
+      currentLang = currentLang === 'ar' ? 'en' : 'ar';
+      applyLanguage(currentLang);
     }
 
-    async function handleForgot(e) {
-        e.preventDefault();
-        const email = elements.emailInput.value.trim();
-        if(!email) { showToast(isArabic ? "⚠️ أدخل بريدك أولاً" : "⚠️ Enter your email first", true); return; }
-        if(!supabase) { showToast("Supabase not ready", true); return; }
-        const { error } = await supabase.auth.resetPasswordForEmail(email);
-        showToast(error ? error.message : (isArabic ? "📧 تم الإرسال" : "📧 Reset link sent"), !!error);
-    }
-    function handleCreate(e) { e.preventDefault(); showToast(isArabic ? "✨ يرجى التواصل مع المدير" : "✨ Contact admin to create account"); }
-
-    // ----- التحقق من الجلسة الحالية (مع منع التعطيل) -----
-    async function checkExistingSession() {
-        if(!supabase) return;
-        try {
-            const { data: { session } } = await supabase.auth.getSession();
-            if(session) {
-                const userId = session.user.id;
-                const { data: profile } = await supabase.from('profiles').select('role').eq('id', userId).single();
-                if(profile) {
-                    if(profile.role === 'super_admin' || profile.role === 'admin') window.location.href = 'dashboard.html';
-                    else if(profile.role === 'scanner') window.location.href = 'scan.html';
-                }
-            }
-        } catch(e) { console.warn("Session check failed", e); }
+    // ========================================
+    // 🎯 التوجيه حسب الصلاحية
+    // ========================================
+    function redirectToPage(role) {
+      const routes = translations[currentLang].routes;
+      if (role === 'super_admin') window.location.href = routes.super;
+      else if (role === 'admin') window.location.href = routes.admin;
+      else if (role === 'scanner') window.location.href = routes.scanner;
+      else window.location.href = routes.home;
     }
 
-    // ----- تحميل التفضيلات وربط الأزرار (دائماً أولاً) -----
-    function loadPreferences() {
-        const savedTheme = localStorage.getItem('themePreference');
-        isDark = savedTheme === 'dark' ? true : (savedTheme === 'light' ? false : window.matchMedia('(prefers-color-scheme: dark)').matches);
-        applyTheme();
-        const savedLang = localStorage.getItem('langPreference');
-        if(savedLang === 'ar') isArabic = true;
-        else if(savedLang === 'en') isArabic = false;
-        else isArabic = navigator.language.toLowerCase().startsWith('ar');
-        updateUI();
-    }
+    // ========================================
+    // 🚀 معالجة تسجيل الدخول
+    // ========================================
+    document.getElementById('loginForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      const btn = document.getElementById('loginBtn');
+      const btnText = document.getElementById('btnText');
+      const errorMsg = document.getElementById('errorMsg');
+      const t = translations[currentLang];
+      
+      // إخفاء الأخطاء وتعطيل الزر
+      errorMsg.style.display = 'none';
+      btn.disabled = true;
+      btnText.textContent = t.loading;
 
-    // ربط الأزرار أولاً
-    elements.themeToggle.addEventListener('click', toggleTheme);
-    elements.langToggle.addEventListener('click', toggleLanguage);
-    elements.loginForm.addEventListener('submit', handleLogin);
-    elements.forgotLink.addEventListener('click', handleForgot);
-    elements.createLink.addEventListener('click', handleCreate);
+      try {
+        // 1. تسجيل الدخول عبر Supabase Auth
+        const { data, error } = await supabase.auth.signInWithPassword({
+          email: document.getElementById('email').value.trim(),
+          password: document.getElementById('password').value
+        });
+        if (error) throw error;
 
-    // بدء التشغيل
-    loadPreferences();
-    checkExistingSession(); // غير متزامن ولا يعطل الأزرار
-</script>
+        // 2. جلب دور المستخدم من جدول profiles
+        const { data: profile, error: profileErr } = await supabase
+          .from('profiles')
+          .select('role')
+          .eq('id', data.user.id)
+          .single();
+
+        if (profileErr || !profile) throw new Error('Profile not found');
+
+        // 3. التوجيه الآمن حسب الصلاحية
+        redirectToPage(profile.role);
+
+      } catch (err) {
+        console.error('Login Error:', err);
+        const isAuthError = err.message?.includes('Invalid') || err.message?.includes('credentials');
+        errorMsg.textContent = isAuthError ? t.errorMsg : t.connError;
+        errorMsg.style.display = 'block';
+        
+        btn.disabled = false;
+        btnText.textContent = t.btnText;
+      }
+    });
+
+    // ========================================
+    // 🎬 التهيئة عند تحميل الصفحة
+    // ========================================
+    window.addEventListener('DOMContentLoaded', () => {
+      applyTheme(currentTheme);
+      applyLanguage(currentLang);
+    });
+  </script>
 </body>
 </html>
